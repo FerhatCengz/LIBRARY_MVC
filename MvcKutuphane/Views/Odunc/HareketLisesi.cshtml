@@ -1,0 +1,39 @@
+﻿@using MvcKutuphane.Models.Entity
+@model List<Tbl_Hareket>
+@{
+    ViewBag.Title = "HareketLisesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+//DBKUTUPHANEEntities db = new DBKUTUPHANEEntities();
+//var joinQuery = (from personel in db.Tbl_Personel join hareket in db.Tbl_Hareket on personel.ID equals hareket.ID select new { personelAdi = personel.PERSONEL }).ToList();
+}
+<table class="table table-hover text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>ALINAN KİTAP</th>
+            <th>KİTABI ALAN ÜYE</th>
+            <th>KİTABI VEREN PERSONEL</th>
+            <th>KITAB ALIS TARIHI</th>
+            <th>KITAB IADE TARIHI</th>
+            <th>KİTAB İŞLEMİ</th>
+        </tr>
+    </thead>
+    <tbody class="table-warning">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.Tbl_Kitap.AD</td>
+                <td>@item.Tbl_Uyeler.AD @item.Tbl_Uyeler.SOYAD</td>
+                <td>@item.Tbl_Personel.PERSONEL</td>
+                <td>@Convert.ToDateTime(item.ALISTARIHI).ToString("dd/MM/yyyy") </td>
+                <td>@Convert.ToDateTime(item.IADETARIHI).ToString("dd/MM/yyyy") </td>
+                <th class="d-flex justify-content-center">
+                    <a href="~/Odunc/OduncIade/@item.ID" style="background-color:#a532b5" class="btn text-white rounded-pill">Kitabı Tesim Al</a>
+                </th>
+            </tr>
+        }
+</table>
+

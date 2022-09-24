@@ -1,0 +1,105 @@
+﻿@using MvcKutuphane.Models.Entity
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPanel.cshtml";
+    DBKUTUPHANEEntities db = new DBKUTUPHANEEntities();
+    string mail = @HttpContext.Current.User.Identity.Name.ToString();
+}
+
+@{
+    var userInfo = (from x in db.Tbl_Uyeler where x.MAIL == mail select new { id = x.ID, ad = x.AD, soyad = x.SOYAD, kad = x.KAD, pass = x.PASS, telNo = x.PHONENO, okul = x.OKUL, }).FirstOrDefault();
+
+    var gelenDegerClassi = ViewBag.mesaj == "success" ? "alert alert-success " : "alert alert-danger";
+    var gelenDegerYazisi = ViewBag.mesaj == "success" ? "İşlemi Başarılı" : "İşlemi Başarısız";
+
+}
+
+<br />
+<link href="~/Content/dropzone.css" rel="stylesheet" />
+@if (ViewBag.mesaj != "")
+{
+    <div id="alert" class="m-auto w-50 text-center @gelenDegerClassi" role="alert">
+        Güncelleme @gelenDegerYazisi
+    </div>
+
+}
+
+
+<ul class="list-group m-3 text-center">
+    <li class="list-group-item active text-center">Kişisel Bilgilerin</li>
+    <li class="list-group-item"><b>AD :</b><i> @userInfo.ad </i></li>
+    <li class="list-group-item"><b>SOYAD :</b><i>@userInfo.soyad</i></li>
+    <li class="list-group-item"><b>MAIL ADRESİN :  </b> <i>@mail</i></li>
+    <li class="list-group-item"><b>KULLANICI ADIN :</b><i>@userInfo.kad</i></li>
+    <li class="list-group-item">
+        <b>PAROLA : </b><i>********</i>
+        <a type="button" class="ml-3" data-toggle="modal" href="#exampleModal"><i class="fa-solid fa-pencil"></i></a>
+
+    </li>
+    <li class="list-group-item"><b>TELEFON NO :</b><i>@userInfo.telNo</i></li>
+    <li class="list-group-item"><b>OKUL :</b> <i>@userInfo.okul</i></li>
+
+</ul>
+
+
+<!-- Button trigger modal -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Şifre Güncelle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" method="post">
+                    <input name="eskiSifre" class="form-control mt-3" placeholder="Eski Şifreniz" />
+                    <input name="PASS1" class="form-control mt-3" placeholder="Yeni Şifreniz" />
+                    <input name="PASS2" class="form-control mt-3" placeholder="Yeni Şifreniz" />
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-success mt-4" type="submit">Şifreyi Güncelle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<a id="photoUpdateAHref" type="button" class="ml-3" data-toggle="modal" href="#exampleModal2"></a>
+
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModal2Label">Fotoğraf Güncelle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="mydropzone" class="m-5 modal-body mb-3 mt-5 dropzone border border-info" style="height:200px;">
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <a class="btn btn-primary mb-2 text-white" id="btnDropzonePost">Fotoğrafı Kaydet</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready((e) => {
+        $("#divPhotoUpdate").click(() => {
+            document.querySelector("#photoUpdateAHref").click();
+        });
+    });
+    setTimeout(() => {
+        $("#alert").remove();
+    }, 2500);
+</script>
+<script type="module" src="~/Scripts/app.js?v1.0"></script>

@@ -1,0 +1,65 @@
+﻿@using MvcKutuphane.Models.Entity
+@model MvcKutuphane.Models.Entity.Tbl_Hareket
+
+@{
+    ViewBag.Title = "OdunVer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DBKUTUPHANEEntities db = new DBKUTUPHANEEntities();
+}
+
+<form class="m-5" method="post">
+    <label>Alınacak Kitap</label>
+    <select class="form-control" name="ALINANKITAP" id="ALINANKITAP">
+        @foreach (var x in db.Tbl_Kitap.Where(x => x.DURUM != false).ToList())
+        {
+            <option value="@x.ID">@x.AD</option>
+        }
+    </select>
+    <br />
+    <div class="row">
+        <div class="col-6">
+            <label>Kitap Alan Üye İsmi</label>
+        </div>
+        <div class="col-6 input-group flex-nowrap">
+            <input id="idyeGoreSearch" class="form-control" value="" placeholder="No'ya Göre Ara" />
+            <div class="input-group-append">
+                <span class="input-group-text" id="spanSearch">Ara</span>
+            </div>
+        </div>
+    </div>
+
+    <select name="UYE" id="UYE" class="form-control mt-3">
+        @foreach (var x in db.Tbl_Uyeler)
+        {
+            <option value="@x.ID">@x.AD&nbsp;@x.SOYAD</option>
+        }
+    </select>
+    <label class="mt-3">Kitap İşlemini Yapan Personel</label>
+    <select name="PERSONEL" id="PERSONEL" class="form-control">
+        @foreach (var x in db.Tbl_Personel)
+        {
+            <option value="@x.ID">@x.PERSONEL</option>
+
+        }
+    </select>
+
+
+    <label class="mt-3">Alış Tarihi</label>
+    <input type="text" class="form-control" disabled id ="ALISTARIHI" name="ALISTARIHI" value="@DateTime.Now.ToShortDateString()" />
+    <label class="mt-3">İade Tarihi</label>
+    <input type="text" class="form-control" disabled id="IADETARIHI" name="IADETARIHI" value="@DateTime.Now.AddDays(7).ToShortDateString()" />
+    <div class="d-flex justify-content-center mt-4">
+        <button type="submit" style="background-color:#af5e5e; color:white;  border-end-start-radius: 100px; border-start-end-radius: 100px;" class="justify-content-center btn btn-group w-50">Kitabı Ödünç Ver</button>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(() => {
+        $("#spanSearch").click(() => {
+            const idValue = $("#idyeGoreSearch").val();
+            console.log($("#UYE").val(idValue));
+
+        })
+    })
+</script>

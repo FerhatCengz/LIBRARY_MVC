@@ -1,0 +1,27 @@
+﻿@using MvcKutuphane.Models.Entity
+@model List<Tbl_Duyurular>
+
+@{
+    ViewBag.Title = "DuyuruIndex";
+    Layout = "~/Views/Shared/_LayoutPanel.cshtml";
+}
+
+<p class="lead font-weight-bold text-center mt-4 mb-2">Duyurular</p>
+@foreach (var x in Model)
+{
+    <div class="card mt-5">
+        <div class="card-header">
+            @x.DUYUBASLIK
+        </div>
+        <div class="card-body d-flex justify-content-between">
+            <div>
+                @x.DUYURUICERIK.Substring(0, x.DUYURUICERIK.Length - 10)
+
+            </div>
+            <div>
+                @x.DUYURUICERIK.Remove(0, x.DUYURUICERIK.Length - 10)
+            </div>
+        </div>
+    </div>
+
+}

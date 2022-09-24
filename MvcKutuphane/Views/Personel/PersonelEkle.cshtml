@@ -1,0 +1,14 @@
+﻿@model MvcKutuphane.Models.Entity.Tbl_Personel
+@{
+    ViewBag.Title = "PersonelEkle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" class="m-5">
+    <label>Personel Adi ve Soyadi</label>
+    <input class="form-control" name="PERSONEL" />
+    @Html.ValidationMessageFor(x => x.PERSONEL, null, new { style = "color:red" })
+    <br />
+    <button type="submit" class="btn btn-dark mt-3">Ekle</button>
+</form>
+

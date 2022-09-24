@@ -1,0 +1,31 @@
+﻿@model MvcKutuphane.Models.Entity.Tbl_Yazar
+@{
+    ViewBag.Title = "YazariGuncelle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+@using (Html.BeginForm("YazariGuncelle", "Yazar", FormMethod.Post, new { @class = "m-5 text-center" }))
+{
+    @Html.HiddenFor(x => x.ID, new { @class = "form-control mt-2 w-50 m-auto" })
+    <br />
+
+    @Html.Label("Yazarın Adı")
+    @Html.TextBoxFor(x => x.AD, new { @class = "form-control mt-2 w-50 m-auto" })
+    <br />
+
+    @Html.Label("Yazarın Soyadı")
+    @Html.TextBoxFor(x => x.SOYAD, new { @class = "form-control mt-2 w-50 m-auto" })
+    <br />
+
+    @Html.Label("Yazarın Detayı")
+    @Html.TextAreaFor(x => x.DETAY, new { @class = "form-control mt-2  w-50 m-auto" })
+    <br />
+
+    @Html.TextBox("btnGuncelle", "Güncelle", new { @class = "btn btn-success mt-5 w-50 m-auto", type = "submit" })
+
+
+}

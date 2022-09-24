@@ -1,0 +1,127 @@
+﻿@using MvcKutuphane.Models.Entity;
+@model List<Tbl_Yazar>
+@{
+    ViewBag.Title = "IndexListe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Detay</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="yazarHikaye"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<a href="/Yazar/YazarEkle" class="btn btn-warning text-white mt-4 d-flex justify-content-center w-25 m-auto">Yeni Yazar Ekle</a>
+
+<table class="table table-dark text-center mt-5">
+    <thead>
+        <tr>
+            <td>#</td>
+            <td>ID</td>
+            <td>AD</td>
+            <td>SOYAD</td>
+            <td>DETAY</td>
+            <td>DÜZENLE</td>
+        </tr>
+    </thead>
+    <tbody>
+        <a class="btn btn-info" id="bulkDelete">Toplu Sil</a>
+        @{int sayac = 0;}
+
+        @foreach (var x in Model)
+        {
+            <tr>
+                <td>
+
+                    <input type="checkbox" class="checkBox form-control" value="@x.ID" />
+                </td>
+                <td>@x.ID</td>
+                <td>@x.AD</td>
+                <td>@x.SOYAD</td>
+                <td>
+                    @{
+                        var a = x.DETAY.Length > 20 ? true : false;
+                        var b = a == true ? x.DETAY.Substring(0, 20) + "..." : x.DETAY;
+                        <a id="ahref_@x.ID" class="text-white" data-toggle="modal" href="#exampleModal">
+                            @b
+                            <input id="aHrefValue_@x.ID" type="hidden" value="@x.DETAY" />
+                        </a>
+
+
+                    }
+                </td>
+                <td class="d-flex justify-content-around">
+                    <a href="YazariGuncelle/@x.ID" type="submit" class="btn btn-success"><i class="fa-solid fa-marker mr-3"></i>Güncelle</a>
+                    @*<a href="#" type="submit" class="btn btn-danger"><i class="fa-solid fa-trash mr-3"></i> Sil</a>*@
+                    @Html.ActionLink("Sil", "YazariSil", new { id = x.ID }, new { @class = "btn btn-danger", onclick = "return confirm('Silmek İstediğinize Emin misiniz ? ')" })
+                </td>
+            </tr>
+            sayac = x.ID;
+
+        }
+    </tbody>
+</table>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script>
+
+    let veriUzunlugu = @sayac;
+    let silinecekDegerleriTopla = [];
+
+
+
+    $(document).ready(() => {
+
+        for (var i = 1; i <= veriUzunlugu; i++) {
+            $("#ahref_" + i).click((e) => {
+                $("#yazarHikaye").text(e.target.children[0].value);
+            });
+
+
+        }
+
+        //Toplu Silme İşlemi
+        $(".checkBox").click(function (e) {
+            if (e.target.checked === true) {
+                silinecekDegerleriTopla.push(Number(e.target.value));
+            }
+            else {
+                silinecekDegerleriTopla.pop(Number(e.target.value));
+            }
+        });
+
+
+    });
+        $("#bulkDelete").click((e) => {
+            $.ajax({
+                url: "/Yazar/YazariSil",
+                type: "POST",
+                data: JSON.stringify(silinecekDegerleriTopla),
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+
+                error : function (data) {
+                    return setTimeout(() => {
+                        alert("Başarıyla Silindi ! Devam Etmek İçin Tamam'a Tıklayınız.");
+                        window.location.reload();
+                    },1500)
+                }
+            });
+        });
+
+
+
+</script>

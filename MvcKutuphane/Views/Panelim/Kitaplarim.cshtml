@@ -1,0 +1,104 @@
+﻿@using MvcKutuphane.Models.Entity
+@using System.Data.Entity
+@{
+    ViewBag.Title = "Kitaplarim";
+    Layout = "~/Views/Shared/_LayoutPanel.cshtml";
+    DBKUTUPHANEEntities db = new DBKUTUPHANEEntities();
+    var mail = (string)Session["MAIL"];
+    var queryUserInfo = (from tblUye in db.Tbl_Uyeler
+                         join tblHareket in db.Tbl_Hareket on tblUye.ID equals tblHareket.UYE
+                         where tblUye.MAIL == mail && tblHareket.ISLEMDURUM == true
+                         select new
+                         {
+                             alinanKitap = tblHareket.ALINANKITAP,
+                             uyeAdSoyad = tblUye.AD + " " + tblUye.SOYAD,
+                             alisTarihi = tblHareket.ALISTARIHI,
+                             iadeTarihi = tblHareket.IADETARIHI,
+                             islemDurumu = tblHareket.ISLEMDURUM
+
+                         }
+     ).ToList();
+
+
+
+    var queryUserInfo2 = (from tblUye in db.Tbl_Uyeler
+                          join tblHareket in db.Tbl_Hareket on tblUye.ID equals tblHareket.UYE
+                          where tblUye.MAIL == mail && tblHareket.ISLEMDURUM == false
+                          select new
+                          {
+                              alinanKitap = tblHareket.ALINANKITAP,
+                              uyeAdSoyad = tblUye.AD + " " + tblUye.SOYAD,
+                              alisTarihi = tblHareket.ALISTARIHI,
+                              iadeTarihi = tblHareket.IADETARIHI,
+                              islemDurumu = tblHareket.ISLEMDURUM
+                          }
+        ).ToList();
+
+
+
+
+
+
+}
+
+
+
+<p class="mt-4 lead text-center font-weight-bold ">@queryUserInfo.Select(x => x.uyeAdSoyad).FirstOrDefault()</p>
+<p class="lead mt-2 mb-2 font-weight-bold text-center">Emanette ki Kitaplarım</p>
+<br />
+<table class="table table-hover">
+    <thead class="table-info">
+        <tr>
+            <th>ALINAN KITABIN ADI</th>
+            <th>ALINAN TARIH</th>
+            <th>VERİŞ TARIH</th>
+            <th>KALAN GÜN</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var x in queryUserInfo)
+        {
+            DateTime iadeTarihiDate = Convert.ToDateTime(x.iadeTarihi);
+            DateTime bugunTarihi = DateTime.Now;
+            TimeSpan fark = DateTime.Parse(iadeTarihiDate.ToShortDateString()) - DateTime.Parse(bugunTarihi.ToShortDateString());
+            var sureKontrol = fark.TotalDays >= 0 ? "table-success" : "table-danger";
+            var gunKontrol = fark.TotalDays >= 0 ? "Kaldı" : "Geçikti";
+            <tr>
+                <td>@db.Tbl_Kitap.Where(y => y.ID == x.alinanKitap).Select(z => z.AD).FirstOrDefault()</td>
+                <td>@Convert.ToDateTime(x.alisTarihi).ToShortDateString()</td>
+                <td>@Convert.ToDateTime(x.iadeTarihi).ToShortDateString()</td>
+                <td class="@sureKontrol">@Math.Abs(fark.TotalDays) Gün @gunKontrol</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+
+
+<p class="mt-4 lead text-center font-weight-bold ">Tesim Ettiğim Kitaplarım</p>
+<br />
+<table class="table table-hover">
+    <thead class="table-info">
+        <tr>
+            <th>ALINAN KITABIN ADI</th>
+            <th>ALINAN TARIH</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var x in queryUserInfo2)
+        {
+            <tr>
+                <td>@db.Tbl_Kitap.Where(y => y.ID == x.alinanKitap).Select(z => z.AD).FirstOrDefault()</td>
+                <td>@Convert.ToDateTime(x.alisTarihi).ToShortDateString()</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+

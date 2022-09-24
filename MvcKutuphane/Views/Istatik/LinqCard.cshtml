@@ -1,0 +1,229 @@
+﻿@using MvcKutuphane.Models.Entity
+@{
+    ViewBag.Title = "LinqCard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DBKUTUPHANEEntities db = new DBKUTUPHANEEntities();
+    //adsoyad = tblYazar.AD + "" + tblYazar.SOYAD
+    var enFazlaKitabiOlanYazarLinq =
+        (
+            from tblKitap in db.Tbl_Kitap
+            join
+        tblYazar in db.Tbl_Yazar
+            on
+        tblKitap.YAZAR equals tblYazar.ID
+            select new
+            {
+                yazarAdSoyad = tblYazar.AD + " " + tblYazar.SOYAD
+            }
+
+        ).GroupBy(x => x.yazarAdSoyad).OrderByDescending(x => x.Count()).FirstOrDefault();
+
+    DateTime today = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+    var bugunKiEmanetKitaplar = db.Tbl_Hareket.Where(x => x.ALISTARIHI == today).Where(x => x.ISLEMDURUM == true).Count();
+
+
+    var enCokOkunanKitap =
+        (
+            from kitap in db.Tbl_Kitap
+            join
+            hareket in db.Tbl_Hareket
+            on
+            kitap.ID equals hareket.ALINANKITAP
+            select new
+            {
+                kitapAdi = kitap.AD
+            }
+
+        ).GroupBy(x => x.kitapAdi).OrderByDescending(x => x.Count()).FirstOrDefault();
+
+
+    var enFazlaKitabiOlanYayinEvi = db.Tbl_Kitap.GroupBy(x => x.YAYINEVI).OrderByDescending(x => x.Count()).Select(x => new { x.Key }).FirstOrDefault();
+    var enBasariliPersonel = (from tblHareket in db.Tbl_Hareket
+                              join tblPersonel in db.Tbl_Personel on tblHareket.PERSONEL equals tblPersonel.ID
+                              orderby db.Tbl_Hareket.Count() descending
+                              select new { personelAdi = tblPersonel.PERSONEL }
+                              ).FirstOrDefault();
+
+    var enAktifUye = (
+                         from uye in db.Tbl_Uyeler
+                         join
+                         hareket in db.Tbl_Hareket
+                         on
+                         uye.ID equals hareket.ID
+                         select new
+                         {
+                             uyeAdSoyad = uye.AD + " " + uye.SOYAD
+                         }
+
+                     ).GroupBy(x => x.uyeAdSoyad).OrderByDescending(x => x.Count()).FirstOrDefault();
+
+
+}
+
+<!-- custom-theme -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Esteem Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+<script type="application/x-javascript">
+        addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+    function hideURLbar(){ window.scrollTo(0,1); } </script>
+
+<!-- //custom-theme -->
+
+<link href="~/web3/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+
+<link href="~/web3/css/component.css" rel="stylesheet" type="text/css" media="all" />
+
+<link href="~/web3/css/export.css" rel="stylesheet" type="text/css" media="all" />
+
+<link href="~/web3/css/style_grid.css" rel="stylesheet" type="text/css" media="all" />
+
+<link href="~/web3/css/style.css" rel="stylesheet" type="text/css" media="all" />
+
+
+<!-- font-awesome-icons -->
+
+<link href="~/web3/css/font-awesome.css" rel="stylesheet">
+
+<!-- //font-awesome-icons -->
+
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800" rel="stylesheet">
+
+<style>
+    li {
+        font-size: 60px;
+    }
+</style>
+</head>
+<body>
+    <!-- banner -->
+    <div class="clearfix"></div>
+
+    <ul class="ca-menu text-center">
+        <li>
+            <a href="#">
+                <i class="fa fa-book" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main">@db.Tbl_Kitap.Count()</h4>
+                    <h3 class="ca-sub">Kitap Sayımız</h3>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main one">@db.Tbl_Uyeler.Count()</h4>
+                    <h3 class="ca-sub one">Üye Sayımız</h3>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa-solid fa-money" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main two">@db.Tbl_Cezalar.Sum(x => x.PARA) ₺</h4>
+                    <h3 class="ca-sub two">Kasadaki Tutar</h3>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa-solid fa-book-dead" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main three">@db.Tbl_Kitap.Count(x => x.DURUM == false)</h4>
+                    <h3 class="ca-sub three">Ödünçteki Kitaplar</h3>
+                </div>
+            </a>
+        </li>
+
+    </ul>
+
+    <ul class="ca-menu text-center">
+        <li>
+            <a href="#">
+                <i class="fa fa-list" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main">@db.Tbl_Kategori.Count()</h4>
+                    <h3 class="ca-sub">Kategori Sayımız</h3>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa-solid fa-user-check" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main one">@enAktifUye.Select(x => x.uyeAdSoyad).FirstOrDefault()</h4>
+                    <h3 class="ca-sub one">En Aktif Üye</h3>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-database" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main two">@enCokOkunanKitap.Select(x => x.kitapAdi).FirstOrDefault()</h4>
+                    <h3 class="ca-sub two">En Çok Okunan Kitap</h3>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa-solid fa-pencil-alt" aria-hidden="true"></i>
+                <div class="ca-content">
+
+                    <h4 class="ca-main three">@enFazlaKitabiOlanYazarLinq.Select(x => x.yazarAdSoyad).FirstOrDefault()</h4>
+
+                    <h3 class="ca-sub three">En Fazla Kitabı Olan Yazar</h3>
+                </div>
+            </a>
+        </li>
+
+    </ul>
+    <ul class="ca-menu text-center">
+        <li>
+            <a href="#">
+                <i class="fa fa-barcode" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main">@enFazlaKitabiOlanYayinEvi.Key</h4>
+                    <h3 class="ca-sub">En İyi yayınevi</h3>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa-solid fa-users"" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main one">@enBasariliPersonel.personelAdi</h4>
+                    <h3 class="ca-sub one">En Başarılı Personel</h3>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa-solid fa-file-contract" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main two">@db.Tbl_Iletisim.Count()</h4>
+                    <h3 class="ca-sub two">Toplam Mesaj Sayısı</h3>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+                <div class="ca-content">
+                    <h4 class="ca-main three">@bugunKiEmanetKitaplar</h4>
+                    <h3 class="ca-sub three">Bügünkü Emanetler</h3>
+                </div>
+            </a>
+        </li>
+
+    </ul>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,55 @@
+﻿@using MvcKutuphane.Models.Entity
+@model MvcKutuphane.Models.Entity.Tbl_Kitap
+
+@{
+    DBKUTUPHANEEntities db = new DBKUTUPHANEEntities();
+    ViewBag.Title = "KitapEkle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<form method="post" class="m-3">
+    <p class="text-uppercase">Kitap Adı</p>
+    @Html.TextBoxFor(x => x.AD, new { @class = "form-control mb-3 mt-3" })
+
+    @*<p class="text-uppercase">kategori</p>
+        @Html.DropDownListFor(y => y.Tbl_Kategori.ID, (List<SelectListItem>)ViewBag.kategoriDropDown, new { @class = "form-control mb-3 mt-3" })
+
+
+        <p class="text-uppercase">Yazar</p>
+        @Html.DropDownListFor(x => x.Tbl_Yazar.ID, (List<SelectListItem>)ViewBag.yazarGetir, new { @class = "form-control" })*@
+
+    <p class="text-uppercase">kategori</p>
+    @*@Html.DropDownList("KATEGORI", (List<SelectListItem>)ViewBag.kategoriDropDown, new { @class = "form-control mb-3 mt-3" })*@
+    @Html.DropDownListFor(x => x.KATEGORI, (List<SelectListItem>)ViewBag.kategoriDropDown, new { @class = "form-control mb-3 mt-3" })
+
+    <p class="text-uppercase">Yazar</p>
+    @*@Html.DropDownList("YAZAR", (List<SelectListItem>)ViewBag.yazarGetir, new { @class = "form-control mb-3 mt-3" })*@
+
+
+    <select class="form-control" name="YAZAR">
+        @foreach (var x in db.Tbl_Yazar.ToList())
+        {
+            <option value="@x.ID">@x.AD @x.SOYAD</option>
+        }
+        </select>
+
+
+    <p class="text-uppercase">Basım Yılı</p>
+    @Html.TextBoxFor(x => x.BASIMYIL, new { type = "number", min = "0", @class = "form-control mb-3 mt-3" })
+
+
+
+
+    <p class="text-uppercase">Yayın Evi</p>
+    @Html.TextBoxFor(x => x.YAYINEVI, new { @class = "form-control mb-3 mt-3" })
+
+    <p class="text-uppercase">Sayfa Sayısı</p>
+    @Html.TextBoxFor(x => x.SAYFASAYISI, new { type = "number", min = "0", @class = "form-control mb-3 mt-3" })
+
+    <div class="d-flex justify-content-center mt-3">
+        <button class="btn btn-primary w-25 mt-3">Kitapı Ekle</button>
+
+    </div>
+</form>
+

@@ -1,0 +1,28 @@
+﻿@model MvcKutuphane.Models.Entity.Tbl_Kitap
+@{
+    ViewBag.Title = "KitapGuncelle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form-group m-5" method="post">
+    @Html.HiddenFor(x => x.ID, new { @class = "form-control" })
+    <label>Kitap Adı</label>
+    @Html.TextBoxFor(x => x.AD, new { @class = "form-control" })
+
+    <label>Kitap Kategorisi</label>
+    @Html.DropDownListFor(x => x.KATEGORI, (List<SelectListItem>)ViewBag.kategoriDropDown, new { @class = "form-control" })
+
+    <label>Yazar Adı</label>
+    @Html.DropDownListFor(x => x.YAZAR, (List<SelectListItem>)ViewBag.yazarGetir, new { @class = "form-control" })
+    <label>BASIMYIL YILI</label>
+    @Html.TextBoxFor(x => x.BASIMYIL, new { @class = "form-control", type = "number", max = "9999", min = "0" })
+
+    <label>Yayın Evi</label>
+    @Html.TextBoxFor(x => x.YAYINEVI, new { @class = "form-control" })
+
+    <label>Sayfa Sayısı</label>
+    @Html.TextBoxFor(x => x.SAYFASAYISI, new { @class = "form-control", type = "number" })
+
+    <button type="submit" class="btn btn-info mt-4">Güncelle</button>
+</form>
+
